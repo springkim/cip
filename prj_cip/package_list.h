@@ -19,8 +19,11 @@ struct Package{
 };
 class PackageList{
 	std::vector<Package> packages;
-	void Read(std::string path){
+	void read(std::string path){
 		
+	}
+	void write(std::string path){
+
 	}
 };
 
