@@ -1,0 +1,3 @@
+[submodule "include/ispring"]
+	path = include/ispring
+	url = https://github.com/springkim/ispring

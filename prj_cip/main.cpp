@@ -3,6 +3,7 @@
 #include<string>
 #include<vector>
 #include<algorithm>
+#include"get_cc_path.h"
 struct Args{
 	std::string command;
 	std::vector<std::string> options;
@@ -110,7 +111,14 @@ Args parse_command(int argc,char** argv) noexcept(false){
 }
 
 int main(int argc,char* argv[]){
-	parse_command(argc,argv);
+    CC cc;
+    auto dir=cc.visualstudio2017();
+    std::cout << dir.include_path << std::endl;
+    std::cout << dir.lib86_path << std::endl;
+    std::cout << dir.lib64_path << std::endl;
+    std::cout << dir.dll86_path << std::endl;
+    std::cout << dir.dll64_path << std::endl;
+	//parse_command(argc,argv);
 
 	return 0;
 }

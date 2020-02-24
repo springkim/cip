@@ -4,104 +4,104 @@
 	<Project>
 		<Option title="cip"/>
 		<Option makefile_is_custom="1"/>
-		<Option compiler="gcc"/>
+		<Option compiler="msvc8"/>
 		<Option virtualFolders="CMake Files\;CMake Files\prj_cip\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug"/>
+				<Option working_dir="I:/code/cip/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="rebuild_cache">
-				<Option working_dir="/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug"/>
-				<Option type="4"/>
-				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="nmake /NOLOGO /f I:\code\cip\cmake-build-debug\Makefile VERBOSE=1 all"/>
+					<CompileFile command="nmake /NOLOGO /f I:\code\cip\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f I:\code\cip\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f I:\code\cip\cmake-build-debug\Makefile VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug"/>
+				<Option working_dir="I:/code/cip/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="nmake /NOLOGO /f I:\code\cip\cmake-build-debug\Makefile VERBOSE=1 edit_cache"/>
+					<CompileFile command="nmake /NOLOGO /f I:\code\cip\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f I:\code\cip\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f I:\code\cip\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="I:/code/cip/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f I:\code\cip\cmake-build-debug\Makefile VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="nmake /NOLOGO /f I:\code\cip\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f I:\code\cip\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f I:\code\cip\cmake-build-debug\Makefile VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="cip">
-				<Option output="/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/prj_cip/cip" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/prj_cip"/>
+				<Option output="I:/code/cip/cmake-build-debug/prj_cip/cip.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="I:/code/cip/cmake-build-debug/prj_cip"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
-				<Option compiler="gcc"/>
+				<Option compiler="msvc8"/>
 				<Compiler>
-					<Add directory="/mnt/c/Users/spring/Documents/git/cip/include"/>
-					<Add directory="/usr/include/c++/7"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
-					<Add directory="/usr/include/c++/7/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
+					<Add directory="I:/code/cip/include"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\ATLMFC\include"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\include"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\ucrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\shared"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\winrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\cppwinrt"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/prj_cip/Makefile&quot;  VERBOSE=1 cip"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/prj_cip/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/prj_cip/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/prj_cip/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="nmake /NOLOGO /f I:\code\cip\cmake-build-debug\prj_cip\Makefile VERBOSE=1 cip"/>
+					<CompileFile command="nmake /NOLOGO /f I:\code\cip\cmake-build-debug\prj_cip\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f I:\code\cip\cmake-build-debug\prj_cip\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f I:\code\cip\cmake-build-debug\prj_cip\Makefile VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="cip/fast">
-				<Option output="/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/prj_cip/cip" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/prj_cip"/>
+				<Option output="I:/code/cip/cmake-build-debug/prj_cip/cip.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="I:/code/cip/cmake-build-debug/prj_cip"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
-				<Option compiler="gcc"/>
+				<Option compiler="msvc8"/>
 				<Compiler>
-					<Add directory="/mnt/c/Users/spring/Documents/git/cip/include"/>
-					<Add directory="/usr/include/c++/7"/>
-					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
-					<Add directory="/usr/include/c++/7/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
+					<Add directory="I:/code/cip/include"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\ATLMFC\include"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\include"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\ucrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\shared"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\winrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\cppwinrt"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j8 -f &quot;/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/prj_cip/Makefile&quot;  VERBOSE=1 cip/fast"/>
-					<CompileFile command="/usr/bin/make -j8 -f &quot;/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/prj_cip/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j8 -f &quot;/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/prj_cip/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j8 -f &quot;/mnt/c/Users/spring/Documents/git/cip/cmake-build-debug/prj_cip/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="nmake /NOLOGO /f I:\code\cip\cmake-build-debug\prj_cip\Makefile VERBOSE=1 cip/fast"/>
+					<CompileFile command="nmake /NOLOGO /f I:\code\cip\cmake-build-debug\prj_cip\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f I:\code\cip\cmake-build-debug\prj_cip\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f I:\code\cip\cmake-build-debug\prj_cip\Makefile VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/mnt/c/Users/spring/Documents/git/cip/prj_cip/get_cc_path.h">
+		<Unit filename="I:/code/cip/prj_cip/get_cc_path.h">
 			<Option target="cip"/>
 		</Unit>
-		<Unit filename="/mnt/c/Users/spring/Documents/git/cip/prj_cip/main.cpp">
+		<Unit filename="I:/code/cip/prj_cip/main.cpp">
 			<Option target="cip"/>
 		</Unit>
-		<Unit filename="/mnt/c/Users/spring/Documents/git/cip/prj_cip/package_list.cpp">
+		<Unit filename="I:/code/cip/prj_cip/package_list.cpp">
 			<Option target="cip"/>
 		</Unit>
-		<Unit filename="/mnt/c/Users/spring/Documents/git/cip/prj_cip/package_list.h">
+		<Unit filename="I:/code/cip/prj_cip/package_list.h">
 			<Option target="cip"/>
 		</Unit>
-		<Unit filename="/mnt/c/Users/spring/Documents/git/cip/CMakeLists.txt">
+		<Unit filename="I:/code/cip/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
-		<Unit filename="/mnt/c/Users/spring/Documents/git/cip/prj_cip/CMakeLists.txt">
+		<Unit filename="I:/code/cip/prj_cip/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\prj_cip\"/>
 		</Unit>
 	</Project>
