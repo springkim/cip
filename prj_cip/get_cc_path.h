@@ -8,11 +8,17 @@
 #include<iostream>
 #include <fstream>
 #include<string>
-#include<cstdio>   //_popen
+#include<cstdio>
+#if defined(__WIN32) || defined(__WIN64)
 #include<Windows.h>
 #include<urlmon.h> //URLDownloadToFileA
 #include <Shlwapi.h>
+#if defined(_MSC_VER)
 #include<Shlobj_core.h>
+#elif defined(__GNUC__)
+#include<shlobj.h>
+#endif
+#endif
 #pragma comment(lib, "Shlwapi.lib")
 #pragma comment(lib, "urlmon.lib")
 #include"ispring/File.h"
@@ -22,7 +28,9 @@ struct CCDir{
     std::string lib64_path;
     std::string dll86_path;
     std::string dll64_path;
+    std::string compiler_path;
 };
+#if defined(__WIN32) || defined(__WIN64)
 class CC {
 private:
     std::string msvcwhere(int version) {
@@ -56,6 +64,8 @@ private:
     CCDir visualstudio_new(int version){
         CCDir dir;
         std::string cc=msvcwhere(version);
+        if(cc.empty())return dir;
+        dir.compiler_path=cc+"\\";
         dir.include_path=cc+"\\VC\\Tools\\MSVC\\";
         auto folders=ispring::File::FileList(dir.include_path,"",false,true);
         std::sort(folders.begin(),folders.end());
@@ -72,9 +82,11 @@ private:
     CCDir visualstudio_old(int version){
         CCDir dir;
         std::string cc=msvcwhere(version);
-        dir.include_path=cc +"\\include\\";
-        dir.lib86_path=cc+"\\lib\\x86\\";
-        dir.lib64_path=cc+"\\lib\\x64\\";
+        if(cc.empty())return dir;
+        dir.compiler_path=cc+"\\";
+        dir.include_path=cc +"\\VC\\include\\";
+        dir.lib86_path=cc+"\\VC\\lib\\";
+        dir.lib64_path=cc+"\\VC\\lib\\amd64\\";
         char buffer[MAX_PATH];
         SHGetSpecialFolderPathA(nullptr,buffer,CSIDL_SYSTEM,FALSE);
         dir.dll86_path=std::string(buffer)+"\\";
@@ -92,7 +104,25 @@ public:
     CCDir visualstudio2015(){
         return visualstudio_old(14);
     }
+    CCDir visualstudio2013(){
+        return visualstudio_old(12);
+    }
 };
+#elif defined(__linux__)
+class CC {
+private:
 
+public:
+    CCDir gcc() {
+        CCDir dir;
+        dir.include_path="/usr/include/";
+        dir.lib64_path="/usr/lib/";
+        dir.dll64_path="/usr/lib/";
+        dir.compiler_path="/usr/";
+        return dir;
+    }
+
+};
+#endif
 
 #endif //CIP_GET_CC_PATH_H

@@ -4,13 +4,14 @@
 #include<vector>
 #include<algorithm>
 #include"get_cc_path.h"
+#include"downloader.h"
 struct Args{
 	std::string command;
 	std::vector<std::string> options;
 	std::vector<std::string> packages;
-	bool has_help(bool help=true,bool _h=true,bool __help=true){
+	bool has_help(bool _help=true,bool _h=true,bool __help=true){
 		for(auto&o:options){
-			if((help && o=="help") || (_h && o=="-h") || (__help && o=="--help")){
+			if((_help && o=="-help") || (_h && o=="-h") || (__help && o=="--help")){
 				return true;
 			}
 		}
@@ -73,8 +74,8 @@ void help_install(){
 	//-U --upgrade
 	//-h --help
 	std::string usage="cip install [options] <requirement specifier> ...\n";
-	usage+="cip install [options] -r <requirements file> ...\n";
-	usage+="cip install [options] <archive url/path> ...";
+	usage+="  cip install [options] -r <requirements file> ...\n";
+	usage+="  cip install [options] <archive url/path> ...";
 	std::vector<std::vector<std::string>> commands;
 	std::vector<std::vector<std::string>> options;
 	options.push_back({"-r, --requirement <file>","Install from the given requirements file. This option can be used multiple times."});
@@ -87,7 +88,8 @@ void parse_install(Args& args){
 		help_install();
 	}else{
 		for(auto&p:args.packages){
-			std::cout << p << std::endl;
+            Downloader loader;
+            loader.Find(p);
 		}
 	}
 }
@@ -111,14 +113,7 @@ Args parse_command(int argc,char** argv) noexcept(false){
 }
 
 int main(int argc,char* argv[]){
-    CC cc;
-    auto dir=cc.visualstudio2017();
-    std::cout << dir.include_path << std::endl;
-    std::cout << dir.lib86_path << std::endl;
-    std::cout << dir.lib64_path << std::endl;
-    std::cout << dir.dll86_path << std::endl;
-    std::cout << dir.dll64_path << std::endl;
-	//parse_command(argc,argv);
+	parse_command(argc,argv);
 
 	return 0;
 }
