@@ -44,6 +44,7 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add option="-DNOMINMAX"/>
 					<Add directory="I:/code/cip/include"/>
 					<Add directory="C:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++"/>
 					<Add directory="C:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32"/>
@@ -66,6 +67,7 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
+					<Add option="-DNOMINMAX"/>
 					<Add directory="I:/code/cip/include"/>
 					<Add directory="C:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++"/>
 					<Add directory="C:/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include/c++/x86_64-w64-mingw32"/>
@@ -82,6 +84,12 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="I:/code/cip/prj_cip/argument.cpp">
+			<Option target="cip"/>
+		</Unit>
+		<Unit filename="I:/code/cip/prj_cip/argument.h">
+			<Option target="cip"/>
+		</Unit>
 		<Unit filename="I:/code/cip/prj_cip/downloader.h">
 			<Option target="cip"/>
 		</Unit>
@@ -92,6 +100,12 @@
 			<Option target="cip"/>
 		</Unit>
 		<Unit filename="I:/code/cip/prj_cip/package_list.h">
+			<Option target="cip"/>
+		</Unit>
+		<Unit filename="I:/code/cip/prj_cip/parser.cpp">
+			<Option target="cip"/>
+		</Unit>
+		<Unit filename="I:/code/cip/prj_cip/parser.h">
 			<Option target="cip"/>
 		</Unit>
 		<Unit filename="I:/code/cip/src/jsoncpp.cpp">

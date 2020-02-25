@@ -30,7 +30,7 @@ struct CCDir{
     std::string dll64_path;
     std::string compiler_path;
 };
-#if defined(__WIN32) || defined(__WIN64)
+#if defined(_WIN32) || defined(_WIN64)
 class CC {
 private:
     std::string msvcwhere(int version) {
