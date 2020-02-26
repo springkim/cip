@@ -90,6 +90,12 @@
 		<Unit filename="I:/code/cip/prj_cip/argument.h">
 			<Option target="cip"/>
 		</Unit>
+		<Unit filename="I:/code/cip/prj_cip/ccpath.cpp">
+			<Option target="cip"/>
+		</Unit>
+		<Unit filename="I:/code/cip/prj_cip/ccpath.h">
+			<Option target="cip"/>
+		</Unit>
 		<Unit filename="I:/code/cip/prj_cip/downloader.h">
 			<Option target="cip"/>
 		</Unit>

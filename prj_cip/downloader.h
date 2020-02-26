@@ -7,13 +7,17 @@
 #include<ispring/Web.h>
 #include<ispring/Basic.h>
 #include<ispring/Console.h>
+#include<ispring/Compression.h>
 #include<regex>
 #include<algorithm>
 #include<set>
 #include<chrono>
 #include<thread>
 #include<atomic>
-#include "argument.h"
+#include"argument.h"
+#include"ccpath.h"
+#include "package_list.h"
+
 #if defined(_WIN32) || defined(_WIN64)
 #include<Windows.h>
 #endif
@@ -23,6 +27,13 @@ struct DownloadPackage{
     std::string version;
     std::set<std::string> options;
     std::string url;
+    std::string GetVersion(){
+        std::string v=version;
+        for(auto&o:options){
+            v+="+"+o;
+        }
+        return v;
+    }
     bool match(DownloadPackage& p){
         if(libname!=p.libname)return false;
         if(version!="" && version!=p.version)return false;
@@ -111,13 +122,42 @@ private:
     std::string get_compiler(){
         for(auto&e:args.options){
             if(e.first=="-c" || e.first=="--compiler"){
-                return get_compiler_for_download(e.second);
+                return e.second;
             }
         }
-        return "";
+        std::string compiler_name=get_default_compiler().compiler_name;
+        if(compiler_name==""){
+            std::cout << ispring::xout.light_red << "No compiler found." << ispring::xout.white << std::endl;
+            exit(1);
+        }
+        std::cout << ispring::xout.light_yellow << "Compiler is not specified for installer. Use the default compiler." << ispring::xout.light_green <<compiler_name << ispring::xout.white << std::endl;
+        return compiler_name;
+    }
+    CCDir MakeCCDir(std::string compiler){
+        CCDir ccdir;
+#if defined(_WIN32) || defined(_WIN64)
+        if(compiler=="vs2019")ccdir=visualstudio2019();
+        if(compiler=="vs2017")ccdir=visualstudio2017();
+        if(compiler=="vs2015")ccdir=visualstudio2015();
+        if(compiler=="vs2013")ccdir=visualstudio2013();
+#endif
+        if(compiler=="gnuc")ccdir=gnuc64();
+        return ccdir;
     }
 public:
-    void Find(std::string package){
+    void Archive(){
+        auto list=GetPackageList("https://github.com/springkim/dataspace/releases/tag/cip(test)", "tir");
+        std::sort(list.begin(), list.end(), std::greater<std::string>());
+        std::string compiler_original=get_compiler();
+        std::string compiler = get_compiler_for_download(compiler_original);
+        for(auto&e:list){
+            if(e.find(compiler)!=std::string::npos){
+                auto slash=e.find_last_of("/");
+                std::cout << e.substr(slash,e.length()-slash) << std::endl;
+            }
+        }
+    }
+    void Find(std::string package,bool downloadonly=false){
         auto list=GetPackageList("https://github.com/springkim/dataspace/releases/tag/cip(test)", "tir");
         std::sort(list.begin(), list.end(), std::greater<std::string>());
         //1. 버전 없음   opencv
@@ -128,10 +168,18 @@ public:
         inpack.options.erase("linux");
         inpack.options.erase("msvc");
         inpack.options.erase("gnuc");
-
-        std::string compiler = get_compiler();
+        std::string compiler_original=get_compiler();
+        std::string compiler = get_compiler_for_download(compiler_original);
+        if(compiler==""){
+            std::cout << ispring::xout.red << "The specified compiler is not supported." << ispring::xout.white << std::endl;
+            exit(1);
+        }
         inpack.options.insert(compiler);
-
+#if defined(_WIN32) || defined(_WIN64)
+        inpack.options.insert("win64");
+#elif defined(__linux__)
+        inpack.options.insert("linux");
+#endif
         bool match=false;
         for(auto e:list){
             int slash=e.find_last_of("/");
@@ -140,7 +188,7 @@ public:
             if(inpack.match(outpack)) {
                 match=true;
                 outpack.url=e;
-                Download(outpack);
+                Download(outpack,compiler_original,downloadonly);
                 break;
             }
         }
@@ -163,6 +211,9 @@ public:
         auto slash=package.url.find_last_of('/');
         std::string packagename=package.url.substr(slash+1,package.url.length()-slash);
         std::cout << "  Downloading " << packagename << std::endl;
+    }
+    void PrintAlreadySatisfied(DownloadPackage& package) {
+        std::cout << "Requirement already satisfied: " << package.libname << "(" << package.version << ")" << std::endl;
     }
     std::string GetTempPath(){
 #if defined(_WIN32) || defined(_WIN64)
@@ -207,26 +258,99 @@ public:
         for (int i = 0; i < length + 1; i++)std::cout << "/";
         std::cout << "]" << std::endl;
     }
-    void Download(DownloadPackage package){
+    void Download(DownloadPackage package,std::string compiler,bool downloadonly=false){
+        CCDir ccdir=MakeCCDir(compiler);
+        PackageList packagelist;
+        if(downloadonly==false) {
+            packagelist.read(ccdir);
+            if (packagelist.exist(package.libname, package.version)) {
+                PrintAlreadySatisfied(package);
+                return;
+            }
+            packagelist.erase(package.libname);
+        }
         PrintCollectiog(package);
         PrintDownloading(package);
         thread_stop=false;
-        std::thread dcli(&Downloader::downloadcli,this,'>','<',20);
-        {
-            auto slash = package.url.find_last_of('/');
-            std::string packagename = package.url.substr(slash + 1, package.url.length() - slash);
-            std::string file = GetTempPath() + packagename;
-            ispring::Web::Download(package.url,file);
-        }
-        thread_stop = true;
-        dcli.join();
-        std::cout << "Installing collected packages: " << package.libname << std::endl;
-        //ispring::Web::Download(package.url,)
-        //다운로드 -> 어디? 임시폴더
-        //압축풀기 -> 임시폴더
-        //pragma comment 적용하기 pdb도 같이 옮겨야 함.
-        //리스트에 적으면서 복사
+        bool quiet=args.has_option({"-q","--quiet"});
+        std::thread dcli;
+        if(!quiet)
+            dcli=std::thread(&Downloader::downloadcli,this,'>','<',20);
 
+        auto slash = package.url.find_last_of("\\/");
+        std::string packagename = package.url.substr(slash + 1, package.url.length() - slash);
+        std::string dir = GetTempPath() + package.libname +DSLASH;
+        ispring::File::DirectoryMake(dir);
+        std::string file = dir + packagename;
+        if(downloadonly){
+            file=packagename;
+        }
+        ispring::Web::Download(package.url,file);
+
+        thread_stop = true;
+        if(!quiet)
+            dcli.join();
+        if(downloadonly) {
+            std::cout << "Successfully downloaded " << packagename << std::endl;
+            return;
+        }
+        std::cout << "Installing collected packages: " << package.libname << std::endl;
+        ispring::File::DirectoryErase(file.substr(0,file.find_last_of('.')));
+        ispring::Zip::Uncompress(file);
+        std::string _3rdparty=file.substr(0,file.find_last_of('.')) + DSLASH + "3rdparty" + DSLASH;
+        auto cutfilename=[](std::string& f)->void{
+            f=ispring::String::GetNameOfFile(f);
+        };
+        if(get_compiler_for_download(compiler)=="msvc"){
+            auto headers=ispring::File::FileList(_3rdparty+"include","*.*",true);
+            auto drlib=ispring::File::FileList(_3rdparty+"lib","*.lib",false);
+            auto dlib=ispring::File::FileList(_3rdparty+"lib" + DSLASH + "Debug","*.lib",false);
+            auto rlib=ispring::File::FileList(_3rdparty+"lib" + DSLASH + "Release","*.lib",false);
+            for_each(drlib.begin(),drlib.end(),cutfilename);
+            for_each(rlib.begin(),rlib.end(),cutfilename);
+            for_each(dlib.begin(),dlib.end(),cutfilename);
+            std::string pragmacomment;
+            pragmacomment+="#if defined(_DEBUG)\n";
+            for(auto&e:dlib){
+                pragmacomment+="#pragma comment(lib,\""+e+"\")\n";
+            }
+            pragmacomment+="#else\n";
+            for(auto&e:rlib){
+                pragmacomment+="#pragma comment(lib,\""+e+"\")\n";
+            }
+            pragmacomment+="#endif\n";
+            for(auto&e:drlib){
+                pragmacomment+="#pragma comment(lib,\""+e+"\")\n";
+            }
+            for(auto&e:headers){
+                std::fstream fout(e,std::ios::app);
+                fout << std::endl << pragmacomment << std::endl;
+                fout.close();
+            }
+        }
+        Package jsonpackage=ccdir.install(_3rdparty+"include",_3rdparty+"lib",_3rdparty+"bin",package.libname,package.GetVersion());
+
+        packagelist.add(jsonpackage);
+        packagelist.write(ccdir);
+    }
+    void Uninstall(std::string package){
+        std::string compiler=get_compiler();
+        CCDir ccdir=MakeCCDir(compiler);
+        DownloadPackage inpack=LibParse(package);
+        PackageList packagelist;
+        packagelist.read(ccdir);
+        if(packagelist.erase(inpack.libname)){
+            std::cout << "Successfully uninstalled " << inpack.libname << std::endl;
+        }else{
+            std::cout << ispring::xout.yellow << "WARNING: Skipping " << inpack.libname << " as it is not installed." << ispring::xout.white << std::endl;
+        }
+        packagelist.write(ccdir);
+    }
+    void Freeze(){
+        CCDir ccdir=MakeCCDir(get_compiler());
+        PackageList packagelist;
+        packagelist.read(ccdir);
+        packagelist.freeze();
     }
 };
 #endif //CIP_DOWNLOADER_H

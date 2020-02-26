@@ -1,34 +1,30 @@
-//
-// Created by VIRNECT on 2020-02-25.
-//
-
-#ifndef CIP_ARGUMENT_H
-#define CIP_ARGUMENT_H
-
+/*
+*  argument.h
+*  cip
+*
+*  Created by kimbomm on 2020. 2. 26...
+*  Copyright 2020 kimbomm. All rights reserved.
+*
+*/
+#if !defined(CIP_7E4_2_1A_ARGUMENT_H_INCLUDED)
+#define CIP_7E4_2_1A_ARGUMENT_H_INCLUDED
 #include<string>
 #include<vector>
 #include<set>
+#if defined(_WIN32) || defined(_WIN64)
+#define DSLASH '\\'
+#elif defined(__linux__)
+#define DSLASH '/'
+#endif
+
 struct Args{
     std::string command;
     std::vector<std::pair<std::string,std::string>> options;
     std::vector<std::string> packages;
-    bool has_help(bool _help=true,bool _h=true,bool __help=true){
-        for(auto&o:options){
-            if((_help && o.first=="-help") || (_h && o.first=="-h") || (__help && o.first=="--help")){
-                return true;
-            }
-        }
-        return false;
-    }
-    bool has_option(std::vector<std::string> op){
-        for(auto&o:options){
-            for(auto&e:op){
-                if(o.first==e)return true;
-            }
-        }
-        return false;
-    }
+    bool has_help(bool _help=true,bool _h=true,bool __help=true);
+    bool has_option(std::vector<std::string> op);
+    std::string get_option_value(std::vector<std::string> op);
 };
 
 
-#endif //CIP_ARGUMENT_H
+#endif  //CIP_7E4_2_1A_ARGUMENT_H_INCLUDED

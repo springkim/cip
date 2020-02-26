@@ -12,50 +12,88 @@
 #include<vector>
 #include<string>
 #include<json/json.h>
-#include"get_cc_path.h"
-struct Package{
-    std::string name;
-	std::string version;
-	std::vector<std::string> include_files;
-	std::vector<std::string> lib_files;
-	std::vector<std::string> dll_files;
-};
+#include<set>
+#include"ccpath.h"
+
 class PackageList{
-	std::vector<Package> packages;
+public:
+	std::map<std::string,Package> packages;
 	void read(CCDir dir){
+        packages.clear();
         std::ifstream fin;
-        fin.open(dir.compiler_path+"cip_list.json", std::ios::in);
-        std::string str;
-        str.assign(std::istreambuf_iterator<char>(fin), std::istreambuf_iterator<char>());
-        Json::Reader reader;
+        fin.open(dir.compiler_path + "cip_list.json", std::ios::in);
+        Json::CharReaderBuilder builder;
         Json::Value root;
-        if (reader.parse(str, root) == false) {
-            return ;
+        JSONCPP_STRING errs;
+        if (Json::parseFromStream(builder,fin, &root,&errs) == false) {
+            return;
         }
-        for(auto it=root.begin();it!=root.end();it++){
-            std::cout << (*it)["name"].asString() << std::endl;
+        for (auto it = root.begin(); it != root.end(); it++) {
+            Package package;
+            package.name=it.key().asString();
+            package.version=(*it)["version"].asString();
+            for (auto jt = (*it)["include"].begin(); jt != (*it)["include"].end(); jt++) {
+                package.include_files.push_back(jt->asString());
+            }
+            for (auto jt = (*it)["lib"].begin(); jt != (*it)["lib"].end(); jt++) {
+                package.lib_files.push_back(jt->asString());
+            }
+            for (auto jt = (*it)["dll"].begin(); jt != (*it)["dll"].end(); jt++) {
+                package.dll_files.push_back(jt->asString());
+            }
+            packages.insert(std::make_pair(package.name,package));
         }
 	}
 	void write(CCDir dir){
         Json::Value root;
         for(auto&p:packages){
             Json::Value item;
-            item["version"]=p.version;
-            for(auto&e:p.include_files){
+            item["version"]=p.second.version;
+            for(auto&e:p.second.include_files){
                 item["include"].append(e);
             }
-            for(auto&e:p.lib_files){
+            for(auto&e:p.second.lib_files){
                 item["lib"].append(e);
             }
-            for(auto&e:p.dll_files){
+            for(auto&e:p.second.dll_files){
                 item["dll"].append(e);
             }
-            root[p.name]=item;
+            root[p.second.name]=item;
         }
         Json::StyledWriter writer;
         std::ofstream fout(dir.compiler_path+"cip_list.json",std::ios::out);
         fout << writer.write(root) << std::endl;
         fout.close();
+	}
+	bool erase(std::string libname){
+	    auto it=packages.find(libname);
+        if(it!=packages.end()){
+            for(auto&f:it->second.include_files)
+                ispring::File::FileErase(f);
+            for(auto&f:it->second.lib_files)
+                ispring::File::FileErase(f);
+            //for(auto&f:it->second.dll_files)
+                //ispring::File::FileErase(f);
+            packages.erase(it);
+            return true;
+        }
+        return false;
+	}
+	void add(Package package){
+        packages.insert(std::make_pair(package.name,package));
+	}
+	bool exist(std::string libname,std::string version=""){
+        auto it=packages.find(libname);
+        if(it!=packages.end()) {
+            if(version=="")return true;
+            return it->second.version==version;
+        }
+        return false;
+	}
+	void freeze(){
+        for(auto&p:packages){
+            std::cout << p.second.name << "==" << p.second.version << std::endl;
+        }
 	}
 };
 
