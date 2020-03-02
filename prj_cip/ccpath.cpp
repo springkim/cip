@@ -112,15 +112,12 @@ CCDir gnuc64() {
     }
     path = path.substr(0, path.find_first_of('\n'));
     if (path.empty())return dir;
-    dir.compiler_path = path.substr(0, path.find_last_of("\\/"));
-
+    dir.dll64_path = dir.compiler_path = path.substr(0, path.find_last_of("\\/"));
+    dir.dll64_path += "\\";
     std::string root = dir.compiler_path.substr(0, dir.compiler_path.find_last_of("\\/") + 1);
     dir.compiler_path+="\\";
     dir.include_path = root + "x86_64-w64-mingw32\\include\\";
     dir.lib64_path = root + "x86_64-w64-mingw32\\lib\\";
-    char buffer[MAX_PATH];
-    SHGetSpecialFolderPathA(nullptr, buffer, CSIDL_SYSTEM, FALSE);
-    dir.dll64_path = std::string(buffer) + "\\";
     dir.compiler_name = "gnuc";
     return dir;
 }

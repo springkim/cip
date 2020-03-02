@@ -20,7 +20,10 @@ void init_hasargoption(){
     hasargoption.insert("--requirement");
 }
 void parse_command(int argc,char** argv) noexcept(false){
-    if(argc==1)help_main();
+    if(argc==1){
+        help_main();
+        return;
+    }
     args.command=argv[1];
     for(int i=2;i<argc;i++){
         if(argv[i][0]=='-') {
@@ -137,7 +140,7 @@ void parse_archive(){
         help_archive();
     }else {
         Downloader loader;
-        loader.Freeze();
+        loader.Archive();
     }
 }
 

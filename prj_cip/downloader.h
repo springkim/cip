@@ -14,6 +14,7 @@
 #include<chrono>
 #include<thread>
 #include<atomic>
+#include<climits>
 #include"argument.h"
 #include"ccpath.h"
 #include "package_list.h"
@@ -34,15 +35,15 @@ struct DownloadPackage{
         }
         return v;
     }
-    bool match(DownloadPackage& p){
-        if(libname!=p.libname)return false;
-        if(version!="" && version!=p.version)return false;
+    int match(DownloadPackage& p){ //->lower is better
+        if(libname!=p.libname)return INT_MAX;
+        if(version!="" && version!=p.version)return INT_MAX;
         std::vector<std::string> ioptions;
         std::set_intersection(options.begin(),options.end(),p.options.begin(),p.options.end(),std::inserter(ioptions,ioptions.begin()));
         if((version=="" && p.options.size()==0) || std::max(options.size(),p.options.size())==ioptions.size()){
-            return true;
+            return -1;  //means exactly same
         }
-        return false;
+        return options.size()-ioptions.size();
     }
 };
 
@@ -153,7 +154,7 @@ public:
         for(auto&e:list){
             if(e.find(compiler)!=std::string::npos){
                 auto slash=e.find_last_of("/");
-                std::cout << e.substr(slash,e.length()-slash) << std::endl;
+                std::cout << e.substr(slash+1,e.length()-slash-1) << std::endl;
             }
         }
     }
@@ -181,16 +182,27 @@ public:
         inpack.options.insert("linux");
 #endif
         bool match=false;
+        std::vector<std::pair<int,DownloadPackage>> pkglist;
         for(auto e:list){
             int slash=e.find_last_of("/");
             std::string cpackage=e.substr(slash+1,e.length()-slash);
             DownloadPackage outpack=CLibParse(cpackage.substr(0,cpackage.find_last_of('.')));
-            if(inpack.match(outpack)) {
+            outpack.url=e;
+            int diff=inpack.match(outpack);
+            if(diff==-1) {
                 match=true;
-                outpack.url=e;
                 Download(outpack,compiler_original,downloadonly);
                 break;
+            }else if(diff!=INT_MAX){
+                pkglist.push_back(std::make_pair(diff,outpack));
             }
+        }
+        if(match==false && pkglist.empty()==false) {
+            std::stable_sort(pkglist.begin(),pkglist.end(),[](const std::pair<int,DownloadPackage>& a,const std::pair<int,DownloadPackage>& b)->bool{
+                return a.first < b.first;
+            });
+            match=true;
+            Download(pkglist.front().second,compiler_original,downloadonly);
         }
         if(match==false){
             std::cout << ispring::xout.red << "ERROR: Could not find a version that satisfies the requirement " << inpack.libname << std::endl;
@@ -322,10 +334,15 @@ public:
             for(auto&e:drlib){
                 pragmacomment+="#pragma comment(lib,\""+e+"\")\n";
             }
+
             for(auto&e:headers){
                 std::fstream fout(e,std::ios::app);
-                fout << std::endl << pragmacomment << std::endl;
-                fout.close();
+                if(fout.is_open()) {
+                    fout << std::endl << pragmacomment << std::endl;
+                    fout.close();
+                }else{
+                    std::cerr << "file open failed" << std::endl;
+                }
             }
         }
         Package jsonpackage=ccdir.install(_3rdparty+"include",_3rdparty+"lib",_3rdparty+"bin",package.libname,package.GetVersion());

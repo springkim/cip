@@ -29,6 +29,7 @@
 #pragma comment(lib, "urlmon.lib")
 
 #include"ispring/File.h"
+#include"ispring/Basic.h"
 struct Package{
     std::string name;
     std::string version;
@@ -73,7 +74,7 @@ struct CCDir {
         }
         auto binfiles=ispring::File::FileList(bin,"*.*",true);
         for(auto&binfile:binfiles){
-            ispring::File::FileCopy(binfile,dll64_path+ispring::String::GetNameOfFile(binfile));
+            ispring::File::FileCopy(binfile, dll64_path + ispring::String::GetNameOfFile(binfile));
             package.dll_files.push_back(dll64_path+ispring::String::GetNameOfFile(binfile));
         }
         return package;
