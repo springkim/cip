@@ -151,8 +151,13 @@ public:
         std::sort(list.begin(), list.end(), std::greater<std::string>());
         std::string compiler_original=get_compiler();
         std::string compiler = get_compiler_for_download(compiler_original);
+#if defined(_WIN32) || defined(_WIN64)
+        std::string os="win64";
+#elif defined(__linux__)
+        std::string os="linux";
+#endif
         for(auto&e:list){
-            if(e.find(compiler)!=std::string::npos){
+            if(e.find(compiler)!=std::string::npos && e.find(os)!=std::string::npos){
                 auto slash=e.find_last_of("/");
                 std::cout << e.substr(slash+1,e.length()-slash-1) << std::endl;
             }
@@ -236,7 +241,7 @@ public:
         return "/tmp/";
 #endif
     }
-    std::atomic_bool thread_stop = false;
+    std::atomic_bool thread_stop;
     void downloadcli(char b='>',char c='<',int length=20) {
 #if defined(_WIN32) || defined(_WIN64)
         std::string bs = "\b";

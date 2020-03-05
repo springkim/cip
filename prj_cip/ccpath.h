@@ -67,16 +67,34 @@ struct CCDir {
         ispring::File::DirectoryCopy(include,include_path);
 
 
+
         auto libfiles=ispring::File::FileList(lib,"*.*",true);
         for(auto&libfile:libfiles){
+#if defined(_WIN32) || defined(_WIN64)
             ispring::File::FileCopy(libfile,lib64_path+ispring::String::GetNameOfFile(libfile));
+#endif
             package.lib_files.push_back(lib64_path+ispring::String::GetNameOfFile(libfile));
         }
+#if defined(__linux__)
+        {
+            std::string cmd = "cp " + lib + "/* " + lib64_path + " -P";
+            system(cmd.c_str());
+        }
+#endif
         auto binfiles=ispring::File::FileList(bin,"*.*",true);
         for(auto&binfile:binfiles){
             ispring::File::FileCopy(binfile, dll64_path + ispring::String::GetNameOfFile(binfile));
             package.dll_files.push_back(dll64_path+ispring::String::GetNameOfFile(binfile));
         }
+#if defined(__linux__)
+        std::string cmd;
+        cmd="chmod 777 -R " + include_path;
+        system(cmd.c_str());
+        cmd="chmod 777 -R " + lib64_path;
+        system(cmd.c_str());
+        cmd="chmod 777 -R " + dll64_path;
+        system(cmd.c_str());
+#endif
         return package;
     }
 };

@@ -17,5 +17,6 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES GNU AND ${CMAKE_SYSTEM_NAME} MATCHES Windows
     target_link_libraries(cip shlwapi urlmon wininet)
 endif()
 if(${CMAKE_CXX_COMPILER_ID} MATCHES GNU AND ${CMAKE_SYSTEM_NAME} MATCHES Linux )
-    target_link_libraries(cip pthread)
+    target_link_libraries(cip pthread stdc++fs)
+    add_compile_options(-lstdc++fs -std=c++17)
 endif()

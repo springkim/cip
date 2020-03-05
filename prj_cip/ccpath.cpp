@@ -147,16 +147,16 @@ CCDir get_default_compiler() {
 CCDir gnuc64() {
     CCDir dir;
     dir.include_path="/usr/include/";
-    dir.lib64_path="/usr/lib/";
-    dir.dll64_path="/usr/lib/";
+    dir.lib64_path="/usr/lib/x86_64-linux-gnu/";
+    dir.dll64_path="/usr/lib/x86_64-linux-gnu/";
     dir.compiler_path="/usr/";
+    dir.compiler_name = "gnuc";
     return dir;
 }
 CCDir get_default_compiler(){
     CCDir dir;
     dir=gnuc64();
-    if(dir.compiler_path!="")return dir;
-    dir.clear();
+    if(dir.compiler_path=="")return dir;
     return dir;
 }
 
