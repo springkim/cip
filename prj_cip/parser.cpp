@@ -10,7 +10,7 @@
 extern Args args;
 extern std::set<std::string> hasargoption;
 void print_version(){
-    std::string version="0.0.1";
+    std::string version="0.0.2";
     std::cout << "cip " << version << std::endl;
 }
 void init_hasargoption(){
