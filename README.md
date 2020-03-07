@@ -10,7 +10,7 @@ cip is the package installer for C/C++. You can use cip to install packages from
 
 [Download windows installer](https://github.com/springkim/cip/releases/download/release/install_cip.bat)
 
-[Download linux installer]()
+[Download linux installer](https://github.com/springkim/cip/releases/download/release/install_cip.sh)
 
 Download and run the above file to complete the installation.
 

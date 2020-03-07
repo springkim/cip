@@ -5,12 +5,10 @@
 
 
 int main(int argc,char* argv[]){
-#ifdef _DEBUG
     if(!ispring::OS::isAdmin()){
         std::cout << ispring::xout.light_red << "cip requires admin privileges to run" << ispring::xout.white << std::endl;
         return 1;
     }
-#endif
     init_hasargoption();
 	parse_command(argc,argv);
 	return 0;
