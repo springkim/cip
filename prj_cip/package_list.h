@@ -86,7 +86,7 @@ public:
         auto it=packages.find(libname);
         if(it!=packages.end()) {
             if(version=="")return true;
-            return it->second.version.substr(0,version.length())==version;
+            return it->second.version==version;
         }
         return false;
 	}

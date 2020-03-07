@@ -357,7 +357,7 @@ public:
                 }
             }
         }
-        Package jsonpackage=ccdir.install(_3rdparty+"include",_3rdparty+"lib",_3rdparty+"bin",package.libname,package.GetVersion());
+        Package jsonpackage=ccdir.install(_3rdparty+"include",_3rdparty+"lib",_3rdparty+"bin",package.libname,package.version);
 
         packagelist.add(jsonpackage);
         packagelist.write(ccdir);
