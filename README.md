@@ -32,6 +32,8 @@ Options:
   -q, --quiet                   Give less output. Option is additive, and can be used up to 3 times (corresponding to WARNING, ERROR, and CRITICAL logging levels).
 ```
 
+CIP requires administrator privileges. For Windows, you need run a cmd with administrator privileges, and for Linux, you need run as sudo.
+
 ### Example
 
 The example below installs the default option openv and openblas for the latest version.
