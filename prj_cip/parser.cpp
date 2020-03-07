@@ -18,6 +18,8 @@ void init_hasargoption(){
     hasargoption.insert("--compiler");
     hasargoption.insert("-r");
     hasargoption.insert("--requirement");
+    hasargoption.insert("-f");
+    hasargoption.insert("--find-links");
 }
 void parse_command(int argc,char** argv) noexcept(false){
     if(argc==1){
@@ -160,6 +162,7 @@ void help_install(){
     options.push_back({"-c, --compiler <gnuc>","Specify the compiler. If not used, it will be installed on the default compiler."});
 #endif
     options.push_back({"-r, --requirement <file>","Install from the given requirements file. This option can be used multiple times."});
+    options.push_back({"-f, --find-links <url>","If a url or path to an html file, then parse for links to archives. If a local path or file:// url that's a directory, then look for archives in the directory listing."});
     options.push_back({"-U, --upgrade","Upgrade all specified packages to the newest available version. The handling of dependencies depends on the upgrade-strategy used."});
     options.push_back({"-h, --help","Show help."});
     help(usage,commands,options);
@@ -179,6 +182,7 @@ void help_download(){
     options.push_back({"-c, --compiler <gnuc>","Specify the compiler. If not used, it will be installed on the default compiler."});
 #endif
     options.push_back({"-r, --requirement <file>","Install from the given requirements file. This option can be used multiple times."});
+    options.push_back({"-f, --find-links <url>","If a url or path to an html file, then parse for links to archives. If a local path or file:// url that's a directory, then look for archives in the directory listing."});
     options.push_back({"-h, --help","Show help."});
     help(usage,commands,options);
 }

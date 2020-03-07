@@ -146,8 +146,15 @@ private:
         return ccdir;
     }
 public:
+    std::string getUrl(){
+        if(args.has_option({"-f","--find-links"})){
+            return args.get_option_value({"-f","--find-links"});
+        }else{
+            return "https://github.com/springkim/cip/releases/tag/archive";
+        }
+    }
     void Archive(){
-        auto list=GetPackageList("https://github.com/springkim/dataspace/releases/tag/cip(test)", "tir");
+        auto list=GetPackageList(getUrl(), "tir");
         std::sort(list.begin(), list.end(), std::greater<std::string>());
         std::string compiler_original=get_compiler();
         std::string compiler = get_compiler_for_download(compiler_original);
@@ -164,7 +171,7 @@ public:
         }
     }
     void Find(std::string package,bool downloadonly=false){
-        auto list=GetPackageList("https://github.com/springkim/dataspace/releases/tag/cip(test)", "tir");
+        auto list=GetPackageList(getUrl(), "tir");
         std::sort(list.begin(), list.end(), std::greater<std::string>());
         //1. 버전 없음   opencv
         //2. 버전 있음   opencv==3.4
