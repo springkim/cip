@@ -287,7 +287,7 @@ public:
         PackageList packagelist;
         if(downloadonly==false) {
             packagelist.read(ccdir);
-            if (packagelist.exist(package.libname, package.version)) {
+            if (packagelist.exist(package.libname, package.GetVersion())) {
                 PrintAlreadySatisfied(package);
                 return;
             }
