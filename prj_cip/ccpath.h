@@ -114,6 +114,7 @@ CCDir get_default_compiler() ;
 #elif defined(__linux__)
 
 CCDir gnuc64() ;
+CCDir cling();
 CCDir get_default_compiler();
 
 #endif

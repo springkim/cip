@@ -153,10 +153,34 @@ CCDir gnuc64() {
     dir.compiler_name = "gnuc";
     return dir;
 }
+CCDIR cling(){
+    CCDir dir;
+    FILE* fp=popen("which cling","r");
+    std::string buffer;
+    char c;
+    while(fread(&c,1,1,fp)==1 && c!=EOF) {
+        buffer.push_back(c);
+    }
+    //   /root/miniconda2/envs/cling/bin/cling
+    int cnt = 0;
+	auto idx = path.length()-(std::find_if(path.rbegin(), path.rend(), [&cnt](char c)->bool {
+		if (c == '/')cnt++;
+		return cnt == 2;
+	}) - path.rbegin());
+    //    /root/miniconda2/envs/cling/
+    dir.include_path=path.substr(0,idx)+"include/";
+    dir.lib64_path=path.substr(0,idx)+"lib";
+    dir.dll64_path=path.substr(0,idx)+"bin";
+    dir.compiler_path=path.substr(0,idx);
+    dir.compiler_name="cling";
+}
 CCDir get_default_compiler(){
     CCDir dir;
     dir=gnuc64();
-    if(dir.compiler_path=="")return dir;
+    if(dir.compiler_path!="")return dir;
+    dir=cling();
+    if(dir.compiler_path!="")return dir;
+    dir.clear();
     return dir;
 }
 

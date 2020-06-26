@@ -17,7 +17,7 @@
 #include<climits>
 #include"argument.h"
 #include"ccpath.h"
-#include "package_list.h"
+#include"package_list.h"
 
 #if defined(_WIN32) || defined(_WIN64)
 #include<Windows.h>
@@ -90,7 +90,7 @@ private:
     DownloadPackage LibParse(std::string package){
         DownloadPackage ret;
         auto pos=package.find("==");
-        std::string opstr;
+        std::string opstr=package;
         ret.libname=package;
         if(pos!=std::string::npos){
             opstr=package.substr(pos+2,package.length()-pos-1);
@@ -115,16 +115,21 @@ private:
         compiler.insert(std::make_pair("gnuc","gnuc"));
 #elif defined(__linux__)
         compiler.insert(std::make_pair("gnuc","gnuc"));
+        compiler.insert(std::make_pair("cling","cling"));
 #endif
         auto it=compiler.find(parsed_compiler);
         if(it==compiler.end())return "";
         else return it->second;
     }
-    std::string get_compiler(){
+    std::string get_compiler(bool allow_default=true){
         for(auto&e:args.options){
             if(e.first=="-c" || e.first=="--compiler"){
                 return e.second;
             }
+        }
+        if(allow_default==false){
+            std::cout << ispring::xout.light_red << "Specify compiler name using -c <compiler>." << ispring::xout.white << std::endl;
+            exit(1);
         }
         std::string compiler_name=get_default_compiler().compiler_name;
         if(compiler_name==""){
@@ -141,8 +146,11 @@ private:
         if(compiler=="vs2017")ccdir=visualstudio2017();
         if(compiler=="vs2015")ccdir=visualstudio2015();
         if(compiler=="vs2013")ccdir=visualstudio2013();
-#endif
         if(compiler=="gnuc")ccdir=gnuc64();
+#elif defined(__linux__)
+        if(compiler=="gnuc")ccdir=gnuc64();
+        if(compiler=="cling")ccdir=cling();
+#endif
         return ccdir;
     }
 public:
@@ -181,6 +189,7 @@ public:
         inpack.options.erase("linux");
         inpack.options.erase("msvc");
         inpack.options.erase("gnuc");
+        inpack.options.erase("cling");
         std::string compiler_original=get_compiler();
         std::string compiler = get_compiler_for_download(compiler_original);
         if(compiler==""){
@@ -357,6 +366,9 @@ public:
                 }
             }
         }
+        if(get_compiler_for_download(compiler)=="cling") {
+            //짜야함.
+        }
         Package jsonpackage=ccdir.install(_3rdparty+"include",_3rdparty+"lib",_3rdparty+"bin",package.libname,package.version);
 
         packagelist.add(jsonpackage);
@@ -376,7 +388,7 @@ public:
         packagelist.write(ccdir);
     }
     void Freeze(){
-        CCDir ccdir=MakeCCDir(get_compiler());
+        CCDir ccdir=MakeCCDir(get_compiler(false));
         PackageList packagelist;
         packagelist.read(ccdir);
         packagelist.freeze();

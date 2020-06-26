@@ -159,7 +159,7 @@ void help_install(){
 #if defined(_WIN32) || defined(_WIN64)
     options.push_back({"-c, --compiler <vs2019,vs2017,vs2015,vs2013,vs2012,vs2010,gnuc>","Specify the compiler. If not used, it will be installed on the default compiler."});
 #elif defined(__linux__)
-    options.push_back({"-c, --compiler <gnuc>","Specify the compiler. If not used, it will be installed on the default compiler."});
+    options.push_back({"-c, --compiler <gnuc,cling>","Specify the compiler. If not used, it will be installed on the default compiler."});
 #endif
     options.push_back({"-r, --requirement <file>","Install from the given requirements file. This option can be used multiple times."});
     options.push_back({"-f, --find-links <url>","If a url or path to an html file, then parse for links to archives. If a local path or file:// url that's a directory, then look for archives in the directory listing."});
@@ -179,7 +179,7 @@ void help_download(){
 #if defined(_WIN32) || defined(_WIN64)
     options.push_back({"-c, --compiler <vs2019,vs2017,vs2015,vs2013,vs2012,vs2010,gnuc>","Specify the compiler. If not used, it will be installed on the default compiler."});
 #elif defined(__linux__)
-    options.push_back({"-c, --compiler <gnuc>","Specify the compiler. If not used, it will be installed on the default compiler."});
+    options.push_back({"-c, --compiler <gnuc,cling>","Specify the compiler. If not used, it will be installed on the default compiler."});
 #endif
     options.push_back({"-r, --requirement <file>","Install from the given requirements file. This option can be used multiple times."});
     options.push_back({"-f, --find-links <url>","If a url or path to an html file, then parse for links to archives. If a local path or file:// url that's a directory, then look for archives in the directory listing."});
@@ -198,7 +198,7 @@ void help_uninstall(){
 #if defined(_WIN32) || defined(_WIN64)
     options.push_back({"-c, --compiler <vs2019,vs2017,vs2015,vs2013,vs2012,vs2010,gnuc>","Specify the compiler. If not used, it will be installed on the default compiler."});
 #elif defined(__linux__)
-    options.push_back({"-c, --compiler <gnuc>","Specify the compiler. If not used, it will be installed on the default compiler."});
+    options.push_back({"-c, --compiler <gnuc,cling>","Specify the compiler. If not used, it will be installed on the default compiler."});
 #endif
     options.push_back({"-r, --requirement <file>","Install from the given requirements file. This option can be used multiple times."});
     options.push_back({"-h, --help","Show help."});
@@ -213,7 +213,7 @@ void help_freeze(){
 #if defined(_WIN32) || defined(_WIN64)
     options.push_back({"-c, --compiler <vs2019,vs2017,vs2015,vs2013,vs2012,vs2010,gnuc>","Specify the compiler. If not used, it will be installed on the default compiler."});
 #elif defined(__linux__)
-    options.push_back({"-c, --compiler <gnuc>","Specify the compiler. If not used, it will be installed on the default compiler."});
+    options.push_back({"-c, --compiler <gnuc,cling>","Specify the compiler. If not used, it will be installed on the default compiler."});
 #endif
     options.push_back({"-h, --help","Show help."});
     help(usage,commands,options);
@@ -227,7 +227,7 @@ void help_archive(){
 #if defined(_WIN32) || defined(_WIN64)
     options.push_back({"-c, --compiler <vs2019,vs2017,vs2015,vs2013,vs2012,vs2010,gnuc>","Specify the compiler. If not used, it will be installed on the default compiler."});
 #elif defined(__linux__)
-    options.push_back({"-c, --compiler <gnuc>","Specify the compiler. If not used, it will be installed on the default compiler."});
+    options.push_back({"-c, --compiler <gnuc,cling>","Specify the compiler. If not used, it will be installed on the default compiler."});
 #endif
     options.push_back({"-h, --help","Show help."});
     help(usage,commands,options);
