@@ -36,8 +36,10 @@ struct DownloadPackage{
         return v;
     }
     int match(DownloadPackage& p){ //->lower is better
-        if(libname!=p.libname)return INT_MAX;
-        if(version!="" && version!=p.version)return INT_MAX;
+        if(libname!=p.libname)
+            return INT_MAX;
+        if(version!="" && version!=p.version)
+            return INT_MAX;
         std::vector<std::string> ioptions;
         std::set_intersection(options.begin(),options.end(),p.options.begin(),p.options.end(),std::inserter(ioptions,ioptions.begin()));
         if((version=="" && p.options.size()==0) || std::max(options.size(),p.options.size())==ioptions.size()){
@@ -95,7 +97,16 @@ private:
         if(pos!=std::string::npos){
             opstr=package.substr(pos+2,package.length()-pos-1);
             ret.libname=package.substr(0,pos);
+        }else{
+            auto pos=package.find("+");
+            if(pos!=std::string::npos){
+                opstr=opstr.substr(pos+1,package.length()-pos-1);
+                ret.libname=opstr.substr(0,pos);
+            }else{  //lib name only
+                opstr="";
+            }
         }
+
         std::vector<std::string> parsed=ispring::String::Tokenizer(opstr,"+");
         if(parsed.size()>0)
             ret.version=parsed[0];
@@ -118,7 +129,11 @@ private:
         compiler.insert(std::make_pair("cling","cling"));
 #endif
         auto it=compiler.find(parsed_compiler);
-        if(it==compiler.end())return "";
+        if(it==compiler.end()){
+            std::cout << ispring::xout.light_red << "Specify correct compiler name using -c <compiler>." << std::endl <<
+             parsed_compiler << " does not support" << ispring::xout.white << std::endl;
+            exit(1);
+        }
         else return it->second;
     }
     std::string get_compiler(bool allow_default=true){
@@ -331,10 +346,11 @@ public:
         ispring::File::DirectoryErase(file.substr(0,file.find_last_of('.')));
         ispring::Zip::Uncompress(file);
         std::string _3rdparty=file.substr(0,file.find_last_of('.')) + DSLASH + "3rdparty" + DSLASH;
-        auto cutfilename=[](std::string& f)->void{
-            f=ispring::String::GetNameOfFile(f);
-        };
+
         if(get_compiler_for_download(compiler)=="msvc"){
+            auto cutfilename=[](std::string& f)->void{
+                f=ispring::String::GetNameOfFile(f);
+            };
             auto headers=ispring::File::FileList(_3rdparty+"include","*.*",true);
             auto drlib=ispring::File::FileList(_3rdparty+"lib","*.lib",false);
             auto dlib=ispring::File::FileList(_3rdparty+"lib" + DSLASH + "Debug","*.lib",false);
@@ -367,7 +383,34 @@ public:
             }
         }
         if(get_compiler_for_download(compiler)=="cling") {
-            //짜야함.
+            std::string pragma_cling;
+            auto headers = ispring::File::FileList(_3rdparty + "include", "*.*", true);
+            if(ispring::File::FileExist(_3rdparty+"ld.txt")){
+                std::ifstream fin;
+                fin.open(_3rdparty+"ld.txt", std::ios::in);
+                pragma_cling.assign(std::istreambuf_iterator<char>(fin),std::istreambuf_iterator<char>());
+
+            }else {
+                auto cutfilename = [](std::string &f) -> void {
+                    f = ispring::String::GetPureNameOfFile(f);
+                };
+
+                auto drlib = ispring::File::FileList(_3rdparty + "lib", "*.so;*.a", false);
+                for_each(drlib.begin(), drlib.end(), cutfilename);
+
+                for (auto &e:drlib) {
+                    pragma_cling += "#pragma cling load(\"" + e + "\")\n";
+                }
+            }
+            for (auto &e:headers) {
+                std::fstream fout(e, std::ios::app);
+                if (fout.is_open()) {
+                    fout << std::endl << pragma_cling << std::endl;
+                    fout.close();
+                } else {
+                    std::cerr << "file open failed" << std::endl;
+                }
+            }
         }
         Package jsonpackage=ccdir.install(_3rdparty+"include",_3rdparty+"lib",_3rdparty+"bin",package.libname,package.version);
 

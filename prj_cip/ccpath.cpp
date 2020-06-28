@@ -153,14 +153,33 @@ CCDir gnuc64() {
     dir.compiler_name = "gnuc";
     return dir;
 }
-CCDIR cling(){
+CCDir cling(){
     CCDir dir;
-    FILE* fp=popen("which cling","r");
-    std::string buffer;
+    FILE* fp=popen("find / -type f -name \"cling\" 2> /dev/null","r");
+    std::string path;
     char c;
     while(fread(&c,1,1,fp)==1 && c!=EOF) {
-        buffer.push_back(c);
+        path.push_back(c);
     }
+    auto paths=ispring::String::Tokenizer(path,"\n");
+    if(paths.size()==0){
+        std::cout << ispring::xout.light_red << "Can't find cling on this system." << ispring::xout.white << std::endl;
+        exit(1);
+    }
+    if(paths.size()==1){
+        path=paths[0];
+    }
+    std::cout << "Enter the correct number of cling path." << std::endl;
+    for(int i=0;i<paths.size();i++){
+        std::cout << "[" << i+1 << "]: " << paths[i] << std::endl;
+    }
+
+    int n=-1;
+    while(!(1<=n && n<=paths.size())) {
+        std::cout << "Number? : ";
+        std::cin >> n;
+    }
+    path=paths[n-1];
     //   /root/miniconda2/envs/cling/bin/cling
     int cnt = 0;
 	auto idx = path.length()-(std::find_if(path.rbegin(), path.rend(), [&cnt](char c)->bool {
@@ -173,6 +192,7 @@ CCDIR cling(){
     dir.dll64_path=path.substr(0,idx)+"bin";
     dir.compiler_path=path.substr(0,idx);
     dir.compiler_name="cling";
+    return dir;
 }
 CCDir get_default_compiler(){
     CCDir dir;

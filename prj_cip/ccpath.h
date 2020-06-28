@@ -15,7 +15,7 @@
 #include <fstream>
 #include<string>
 #include<cstdio>
-
+#include<ispring/Console.h>
 #if defined(_WIN32) || defined(_WIN64)
 
 #include<Windows.h>
@@ -64,7 +64,7 @@ struct CCDir {
             package.include_files.push_back(include_path+h.substr(pos, h.length() - pos));
         }
 
-        ispring::File::DirectoryCopy(include,include_path);
+        ispring::File::DirectoryCopy(include+"/*",include_path);
 
 
 
