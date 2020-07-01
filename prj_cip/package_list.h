@@ -66,12 +66,29 @@ public:
         fout.close();
 	}
 	bool erase(std::string libname){
+	    std::map<std::string,int> files;
+	    for(auto&e:packages){
+	        for(auto&f:e.second.lib_files){
+	            auto it=files.find(f);
+	            if(it==files.end()){
+	                files.insert(std::make_pair(f,1));
+	            }else{
+	                it->second++;
+	            }
+	        }
+	    }
+
 	    auto it=packages.find(libname);
         if(it!=packages.end()){
             for(auto&f:it->second.include_files)
                 ispring::File::FileErase(f);
-            for(auto&f:it->second.lib_files)
-                ispring::File::FileErase(f);
+            for(auto&f:it->second.lib_files) {
+                auto jt=files.find(f);
+                if(jt->second==1) {
+                    ispring::File::FileErase(f);
+                }
+            }
+            //Do not remove dll files
             //for(auto&f:it->second.dll_files)
                 //ispring::File::FileErase(f);
             packages.erase(it);

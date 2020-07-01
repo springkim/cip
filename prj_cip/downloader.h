@@ -343,9 +343,11 @@ public:
             return;
         }
         std::cout << "Installing collected packages: " << package.libname << std::endl;
-        ispring::File::DirectoryErase(file.substr(0,file.find_last_of('.')));
+        std::string tmp_dir=file.substr(0,file.find_last_of('.'));
+        if(ispring::File::DirectoryExist(tmp_dir))
+            ispring::File::DirectoryErase(tmp_dir);
         ispring::Zip::Uncompress(file);
-        std::string _3rdparty=file.substr(0,file.find_last_of('.')) + DSLASH + "3rdparty" + DSLASH;
+        std::string _3rdparty=tmp_dir + DSLASH + "3rdparty" + DSLASH;
 
         if(get_compiler_for_download(compiler)=="msvc"){
             auto cutfilename=[](std::string& f)->void{
