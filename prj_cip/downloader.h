@@ -373,7 +373,13 @@ public:
             for(auto&e:drlib){
                 pragmacomment+="#pragma comment(lib,\""+e+"\")\n";
             }
-
+            if(ispring::File::FileExist(_3rdparty+"op.txt")){
+                std::ifstream fin;
+                fin.open(_3rdparty+"op.txt", std::ios::in);
+                std::string op;
+                op.assign(std::istreambuf_iterator<char>(fin),std::istreambuf_iterator<char>());
+                pragmacomment+=op;
+            }
             for(auto&e:headers){
                 std::fstream fout(e,std::ios::app);
                 if(fout.is_open()) {
