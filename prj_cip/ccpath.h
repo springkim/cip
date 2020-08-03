@@ -12,7 +12,7 @@
 
 
 #include<iostream>
-#include <fstream>
+#include<fstream>
 #include<string>
 #include<cstdio>
 #include<ispring/Console.h>
@@ -63,9 +63,11 @@ struct CCDir {
             size_t pos = h.find("include") + 8;
             package.include_files.push_back(include_path+h.substr(pos, h.length() - pos));
         }
-
+#if defined(_WIN32) || defined(_WIN64)
         ispring::File::DirectoryCopy(include+"/*",include_path);
-
+#else
+		ispring::File::DirectoryCopy(include, include_path);
+#endif
 
 
         auto libfiles=ispring::File::FileList(lib,"*.*",true);
