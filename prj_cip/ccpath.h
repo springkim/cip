@@ -64,9 +64,9 @@ struct CCDir {
             package.include_files.push_back(include_path+h.substr(pos, h.length() - pos));
         }
 #if defined(_WIN32) || defined(_WIN64)
-        ispring::File::DirectoryCopy(include+"/*",include_path);
+        ispring::File::DirectoryCopy(include,include_path);
 #else
-		ispring::File::DirectoryCopy(include, include_path);
+		ispring::File::DirectoryCopy(include + "/*", include_path);
 #endif
 
 
